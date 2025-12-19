@@ -1,62 +1,77 @@
-# Gerenciador de tarefas (CLI)
-# Adicionar, listar, remover e concluir tarefas
-# Verificar e tratar dados inseridos incorretamente
+# Gerenciador de tarefas (CLI) Ok
+# Adicionar, listar, remover e concluir tarefas OK
+# Verificar e tratar dados inseridos incorretamente OK
 # Salvar em arquivo .json ou .txt
 # Extras:
     # Filtro por status (pendente/concluída)
     # Ordenar por data
 
 
-taskList = []
+task_list = []
 
 def initApp():
-    userInput = input('What do you want to do? add, list, remove or check a task: ')
-    if userInput == 'add':
+    user_input = input('What do you want to do? add, list, remove or check a task: ')
+    if user_input == 'add':
         add()
-    elif userInput == 'list':
+    elif user_input == 'list':
         listTask()
-    elif userInput == 'remove':
+    elif user_input == 'remove':
         removeTask()
-    elif userInput == 'check':
+    elif user_input == 'check':
         checkedTask()
+    else:
+        print('Choose one option')
+        initApp()
 
 def add():
 
-    addInfo = input('Write the task: ("exit" for menu) ')
+    add_info = input('Write the task: ("exit" for menu) ')
 
-    if addInfo == '' or addInfo == 'exit':
+    if add_info == '' or add_info == 'exit':
         listTask()
     else:
-        taskList.append([f'{addInfo}', False])
+        task_list.append([f'{add_info}', False])
         print('task added\n')
         add()
 
 def listTask():
-    if len(taskList) == 0:
+    if len(task_list) == 0:
         print("To do list empty \nLet's start!")
     else:
-        for task in range(len(taskList)):
+        for task in range(len(task_list)):
         
-            if taskList[task][1] == False:
-                print(f'{task + 1}: {taskList[task][0]} [ ]')
-            elif taskList[task][1] == True:
-                print(f'{task + 1}: {taskList[task][0]} [X]')
+            if task_list[task][1] == False:
+                print(f'{task + 1}: {task_list[task][0]} [ ]')
+            elif task_list[task][1] == True:
+                print(f'{task + 1}: {task_list[task][0]} [X]')
             
     initApp()
 
 def removeTask():
-    removeTaskId = int(input('What is the task index? '))
-    taskList.pop(removeTaskId - 1)
+    remove_task_id = input('What is the task index? ')
+    
+    if remove_task_id.isdigit():
+        remove_task_id_Num = int(remove_task_id)
+    elif remove_task_id == '' or remove_task_id == 'exit':
+        initApp()
+    else:
+        print("task doesn't exist. Try again!")
+        removeTask()
+
+    if remove_task_id_Num > len(task_list) or remove_task_id_Num <= 0:
+        print("task doesn't exist. Try again!")
+        removeTask()
+    
+    
+    task_list.pop(remove_task_id_Num - 1)
     print('Done')
     listTask()
 
 def checkedTask():
-    checkedTaskId = int(input('What is the task index? '))
+    checked_task_Id = int(input('What is the task index? '))
     #ternary expression
-    taskList[checkedTaskId - 1][1] = True if taskList[checkedTaskId - 1][1] == False else False 
+    task_list[checked_task_Id - 1][1] = True if task_list[checked_task_Id - 1][1] == False else False 
     listTask()
-
-
 
 
 initApp()
