@@ -1,0 +1,6 @@
+GERENCIADOR DE TAREFAS
+1: sleep [ ]
+2: work [ ]
+3: gym [ ]
+4: shop [ ]
+5: scool [X]
