@@ -27,10 +27,10 @@ Projeto simples em **Python** de um **gerenciador de tarefas via linha de comand
 
 ## Comandos disponíveis
 
-add → Adicionar nova tarefa
-list → Listar tarefas
-remove → Remover tarefa pelo índice
-check → Marcar/desmarcar tarefa como concluída
-status → Filtrar tarefas por status
-save → Salvar tarefas em arquivo .txt
-close → Encerrar o programa
+- add: Adicionar nova tarefa
+- list: Listar tarefas
+- remove: Remover tarefa pelo índice
+- check: Marcar/desmarcar tarefa como concluída
+- status: Filtrar tarefas por status
+- save: Salvar tarefas em arquivo .txt
+- close: Encerrar o programa
