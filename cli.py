@@ -4,13 +4,13 @@
 # Salvar em arquivo .txt
 # Extras:
     # Filtro por status (pendente/concluída)
-    # Ordenar por data
+    
 
 
 task_list = []
 
 def initApp():
-    user_input = input('What do you want to do? add, list, remove, check or save: ').lower()
+    user_input = input('What do you want to do? add, check, list, remove, status or save: (close to end program) ').lower()
     if user_input == 'add':
         add()
     elif user_input == 'list':
@@ -21,6 +21,10 @@ def initApp():
         checkedTask()
     elif user_input == 'save':
         saveTask()
+    elif user_input == 'status':
+        filterStatus()
+    elif user_input == 'close':
+        return
     else:
         print('Choose one option')
         initApp()
@@ -100,6 +104,27 @@ def saveTask():
             file.writelines(msg_task)
     print("Saved as 'Gerenciador de Tarefas.txt'\n")
     initApp()
+
+def filterStatus ():
+    status = input('which tasks do you want to see? Done or To do: ').lower()
+    status_Bol = None
+    if status == 'done':
+        status_Bol = True
+    elif status == 'to do':
+        status_Bol = False
+    else:
+        print('type \'Done\' or \'To do\'')
+        filterStatus()
+    
+    for i,el in enumerate(task_list):
+        if el[1] == status_Bol:
+            if el[1] == False:
+                print(f'{i + 1}: {el[0]} [ ]')
+            elif el[1] == True:
+                print(f'{i + 1}: {el[0]} [X]')
+            
+    initApp()
+           
         
 
 initApp()
