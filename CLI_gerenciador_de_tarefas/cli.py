@@ -14,15 +14,15 @@ def initApp():
     if user_input == 'add':
         add()
     elif user_input == 'list':
-        listTask()
+        list_task()
     elif user_input == 'remove':
-        removeTask()
+        remove_task()
     elif user_input == 'check':
-        checkedTask()
+        checked_task()
     elif user_input == 'save':
-        saveTask()
+        save_task()
     elif user_input == 'status':
-        filterStatus()
+        filter_status()
     elif user_input == 'close':
         return
     else:
@@ -34,13 +34,13 @@ def add():
     add_info = input('Write the task: ("exit" for menu) ')
 
     if add_info == '' or add_info == 'exit':
-        listTask()
+        list_task()
     else:
         task_list.append([f'{add_info}', False])
         print('task added\n')
         add()
 
-def listTask():
+def list_task():
     if len(task_list) == 0:
         print("To do list empty \nLet's start!")
     else:
@@ -53,7 +53,7 @@ def listTask():
             
     initApp()
 
-def removeTask():
+def remove_task():
     remove_task_id = input('What is the task index? ')
     
     if remove_task_id.isdigit():
@@ -62,37 +62,37 @@ def removeTask():
         initApp()
     else:
         print("Task doesn't exist. Try again!")
-        removeTask()
+        remove_task()
 
     if remove_task_id_Num > len(task_list) or remove_task_id_Num <= 0:
         print("Task doesn't exist. Try again!")
-        removeTask()
+        remove_task()
     
     
     task_list.pop(remove_task_id_Num - 1)
     print('Done')
-    listTask()
+    list_task()
 
-def checkedTask():
+def checked_task():
     checked_task_Id = input('What is the task index? ')
     
     if checked_task_Id.isdigit():
         checked_task_Id = int(checked_task_Id)
         if checked_task_Id <=0 or checked_task_Id > len(task_list):
             print('Invalid index range. Try again!')
-            checkedTask()
+            checked_task()
         else:
             #ternary expression
             task_list[checked_task_Id - 1][1] = True if task_list[checked_task_Id - 1][1] == False else False 
             print('Done!\n')
-            listTask()
+            list_task()
     elif checked_task_Id == '' or checked_task_Id.lower() == 'exit':
         initApp()
     else:
         print('Choose a valid index')
-        checkedTask()
+        checked_task()
 
-def saveTask():
+def save_task():
     task_doc = 'Gerenciador de Tarefas.txt'
     with open(task_doc, 'w') as file:
         file.write('GERENCIADOR DE TAREFAS\n')
@@ -105,7 +105,7 @@ def saveTask():
     print("Saved as 'Gerenciador de Tarefas.txt'\n")
     initApp()
 
-def filterStatus ():
+def filter_status ():
     status = input('which tasks do you want to see? Done or To do: ').lower()
     status_Bol = None
     if status == 'done':
@@ -114,7 +114,7 @@ def filterStatus ():
         status_Bol = False
     else:
         print('type \'Done\' or \'To do\'')
-        filterStatus()
+        filter_status()
     
     for i,el in enumerate(task_list):
         if el[1] == status_Bol:
