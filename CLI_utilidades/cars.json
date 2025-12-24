@@ -1,0 +1,17 @@
+[
+    {
+        "brand": "Chevrolet",
+        "model": "chevette",
+        "year": 1977
+    },
+    {
+        "brand": "BYD",
+        "model": "dolphin",
+        "year": 2025
+    },
+    {
+        "brand": "Haval",
+        "model": "H6 GT",
+        "year": 2025
+    }
+]

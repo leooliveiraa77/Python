@@ -6,6 +6,7 @@
 # Validar CPF/CNPJ
 
 import json
+import csv
 
 #Modelos em estoque
 cars = [{'brand': 'Chevrolet', 'model': 'chevette', 'year':1977},
@@ -13,12 +14,14 @@ cars = [{'brand': 'Chevrolet', 'model': 'chevette', 'year':1977},
         {'brand': 'Haval', 'model': 'H6 GT', 'year':2025}]
 
 def initApp():
-    user_input = input('TOOLKIT for car dealership: add, save: ').lower()
+    user_input = input('TOOLKIT for car dealership: add, save, csv: ').lower()
 
     if user_input == 'add':
         add_car()
     elif user_input == 'save':
         save_car()
+    elif user_input == 'csv':
+        convert_csv()
 
 def add_car():
     user_car_Input = input('type separed by commas \',\': brand, model, year: ').lower()
@@ -35,6 +38,15 @@ def save_car():
     with open('cars.json', 'w', encoding='utf-8') as file:
         json.dump(cars, file, ensure_ascii= False, indent= 4)
     print('Saved!')
+    initApp()
+
+def convert_csv():
+    try:
+        with open('cars.json', 'r', encoding='utf-8') as file:
+            data = json.load(file)
+            print(data)
+    finally:
+        print("No such file or directory: 'cars.json'")
 
 initApp()
 
