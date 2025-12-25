@@ -41,12 +41,26 @@ def save_car():
     initApp()
 
 def convert_csv():
+    data = None
     try:
         with open('cars.json', 'r', encoding='utf-8') as file:
             data = json.load(file)
-            print(data)
-    finally:
-        print("No such file or directory: 'cars.json'")
+            print(data[0].keys())
+    except FileNotFoundError:
+        print('File not Found')
+
+    if not isinstance(data, list) or not data:
+        initApp()
+
+    try:
+        with open('cars.csv', 'w', newline= '',encoding='utf-8') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames= data[0].keys())
+            writer.writeheader()
+            writer.writerows(data)
+        print("CSV file successfully created!")
+    except FileNotFoundError:
+        print('File not Found')
+    initApp()
 
 initApp()
 
