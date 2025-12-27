@@ -4,6 +4,7 @@
 # listar e ordenar os dados
 # Validar CPF/CNPJ para compra
 # implementar Argparse Module
+#criar o Readme
 
 import argparse
 import csv
