@@ -1,0 +1,4 @@
+# ignora todos arquivos db
+*.db
+__pycache__/
+*.pyc
