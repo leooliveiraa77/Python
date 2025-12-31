@@ -5,6 +5,7 @@ CREATE_BOOKS_TABLE = "CREATE TABLE IF NOT EXISTS books(id INTEGER PRIMARY KEY AU
 INSERT_BOOK = "INSERT INTO books (title, author, year, status) VALUES (?, ?, ?, ?)"
 SELECT_ALL_BOOKS = 'SELECT * FROM books'
 SELECT_BOOK_BY_STATUS = 'SELECT * FROM books WHERE status = ?'
+SELECT_BOOK_BY_ID = 'SELECT * FROM books WHERE id = ?'
 UPDATE_BOOK_STATUS= 'UPDATE books SET status = ? WHERE id = ?'
 DELETE_BOOK_BY_ID = 'DELETE FROM books WHERE id = ?'
 
@@ -19,7 +20,7 @@ def get_connection():
 def create_tables(connection):
     with connection() as conn:
         cursor = conn.cursor()
-        cursor.execute(CREATE_BOOKS_TABLE)
+        cursor.execute(CREATE_BOOKS_TABLE,)
     
 def add_book(connection, title, author, year, status):
     with connection() as conn:
@@ -29,15 +30,15 @@ def add_book(connection, title, author, year, status):
 def get_all_books(connection):
     with connection() as conn:
         cursor = conn.cursor()
-        cursor.execute(SELECT_ALL_BOOKS)
+        cursor.execute(SELECT_ALL_BOOKS,)
         return cursor.fetchall()
 
 def delete_book(connection, reading_id):
     with connection() as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM books WHERE id = ?', (reading_id,))
-        book_deleted = cursor.fetchone()
-        cursor.execute(DELETE_BOOK_BY_ID, (reading_id))
+        
+        book_deleted = get_books_by_id(get_connection, reading_id)
+        cursor.execute(DELETE_BOOK_BY_ID, (reading_id,))
         return book_deleted
     
 
@@ -52,6 +53,13 @@ def update_status(connection, new_status, id):
     with connection() as conn:
         cursor = conn.cursor()
         cursor.execute(UPDATE_BOOK_STATUS, (new_status, id))
-        cursor.execute('SELECT * FROM books WHERE id = ?',(id,))
-        reading_updated = cursor.fetchone()
+        
+        reading_updated = get_books_by_id(get_connection, id)
         return reading_updated
+
+def get_books_by_id(connection, id):
+    with connection() as conn:
+        cursor = conn.cursor()   
+        cursor.execute(SELECT_BOOK_BY_ID,(id,))
+        book = cursor.fetchone()
+        return book
