@@ -1,0 +1,9 @@
+[project]
+name = "user-auth-api"
+version = "0.1.0"
+description = "The goal of this app is to build a API for user login and authentication"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.128.0",
+]
