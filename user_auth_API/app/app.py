@@ -1,18 +1,16 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from app.schemas import NewUser
+
 
 
 app = FastAPI()
 users = (17,)
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: bool | None
+
 
 @app.get('/')
 def read_root():
-    return {'Hello world'}
+    return {f'Hello world'}
 
 @app.get('/login/{user_id}')
 def read_item(user_id: int, q: str | None = None):
@@ -21,6 +19,10 @@ def read_item(user_id: int, q: str | None = None):
     return {'User_id': user_id, 'q': q}
 
 @app.put('/item/{item_id}')
-def update_item(item_id: int, item: Item):
-    return{'item_price': Item.price, 'item_id': item_id}
+def update_item(item_id: int, item: NewUser):
+    return{'item_price': NewUser.name, 'item_id': item_id}
 
+@app.post('/new_user')
+def create_user(user: NewUser) -> NewUser:
+    print(f'User {user.name}')
+    return NewUser(name= 'farelo', password= 'aboba', id= 123)
