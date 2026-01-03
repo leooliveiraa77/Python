@@ -5,5 +5,5 @@ class User(SQLModel, table=True):
     user_name: str
     email: str = Field(index=True, unique=True)
     password_hash: str
-    acc_crated_date: str
+    acc_crated_date: str | None
 
