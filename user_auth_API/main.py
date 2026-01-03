@@ -1,5 +1,5 @@
 import uvicorn 
-from app.db import creat_db_and_tables, create_Users, select_Users
+from app.db import creat_db_and_tables, create_users, select_users
 
 
 def main():

@@ -1,4 +1,4 @@
-from sqlmodel import SQLModel, create_engine, Session, select
+from sqlmodel import SQLModel, create_engine, Session, select, col
 from pathlib import Path
 from app.models import *
 
@@ -8,7 +8,7 @@ sqlite_url = f'sqlite:///{sqlite_file_name}'
 
 engine = create_engine(sqlite_url, echo=True)
 
-def create_Users(user):
+def create_users(user):
 
     user_acc = User(user_name=user.user_name, email=user.email, password_hash=user.password_hash, acc_crated_date=user.acc_crated_date)
 
@@ -18,7 +18,7 @@ def create_Users(user):
         session.refresh(user_acc)
         return user_acc
 
-def select_Users():
+def select_users():
     with Session(engine) as session:
         statement = select(User)
         result= session.exec(statement)
@@ -26,6 +26,26 @@ def select_Users():
         # users = session.exec(select(User)).all same effect as previous lines
         print(f'test: {users}')
         return users
+    
+def select_user_by_email(email):
+    with Session(engine)as session:
+        statement = select(User).where(col(User.email) == email)
+        result = session.exec(statement).first()
+        return result
+    
+def update_user_by_email(email, new_user_password, new_user_name):
+    with Session(engine) as session:
+        statement = session.exec(select(User).where(col(User.email) == email)).first()
+        if new_user_password:
+            statement.password_hash = new_user_password
+        if new_user_name:
+            statement.user_name = new_user_name
+        
+        session.add(statement)
+        session.commit()
+        session.refresh(statement)
+
+    return statement
 
 def creat_db_and_tables():
     SQLModel.metadata.create_all(engine)
