@@ -8,6 +8,10 @@ sqlite_url = f'sqlite:///{sqlite_file_name}'
 
 engine = create_engine(sqlite_url, echo=True)
 
+def creat_db_and_tables():
+    SQLModel.metadata.create_all(engine)
+    print('Done!')
+
 def create_users(user):
 
     user_acc = User(user_name=user.user_name, email=user.email, password_hash=user.password_hash, acc_crated_date=user.acc_crated_date)
@@ -35,18 +39,23 @@ def select_user_by_email(email):
     
 def update_user_by_email(email, new_user_password, new_user_name):
     with Session(engine) as session:
-        statement = session.exec(select(User).where(col(User.email) == email)).first()
+        user = session.exec(select(User).where(col(User.email) == email)).first()
         if new_user_password:
-            statement.password_hash = new_user_password
+            user.password_hash = new_user_password
         if new_user_name:
-            statement.user_name = new_user_name
+            user.user_name = new_user_name
         
-        session.add(statement)
+        session.add(user)
         session.commit()
-        session.refresh(statement)
+        session.refresh(user)
 
-    return statement
+    return user
 
-def creat_db_and_tables():
-    SQLModel.metadata.create_all(engine)
-    print('Done!')
+def delete_user_by_mail(email):
+    with Session(engine) as session:
+        user = session.exec(select(User).where(col(User.email) == email)).first()
+        if user:
+            session.delete(user)
+            session.commit()
+        
+        return user
