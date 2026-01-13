@@ -1,7 +1,5 @@
 GERENCIADOR DE TAREFAS
-1: work [X]
-2: gym [ ]
-3: sleep [X]
-4: luch [ ]
-5: study [X]
-6: study math [ ]
+ 1: testar o app [X]
+ 2: para deletetar [ ]
+ 4: Lavar roupa [ ]
+ 5: calistenia [ ]

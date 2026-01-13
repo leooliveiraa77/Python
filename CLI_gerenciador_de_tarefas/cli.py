@@ -4,10 +4,13 @@
 # Salvar em arquivo .txt
 # Extras:
     # Filtro por status (pendente/concluída)
+    # Implementar um banco de dados SQLite
+
+from db import add_task_db, get_all_task_db, remove_by_id_db, update_status_by_add, get_task_by_status_db
     
 
 
-task_list = []
+task_list = ['amorinha']
 
 def initApp():
     user_input = input('What do you want to do? add, check, list, remove, status or save: (close to end program) ').lower()
@@ -36,25 +39,27 @@ def add():
     if add_info == '' or add_info == 'exit':
         list_task()
     else:
-        task_list.append([f'{add_info}', False])
+        add_task_db(add_info)
         print('task added\n')
         add()
 
-def list_task():
-    if len(task_list) == 0:
-        print("To do list empty \nLet's start!")
+def list_task(ret= False): #return : ret
+    task_list_db = get_all_task_db()
+    if len(task_list_db) == 0:
+        print("To do list is empty \nLet's start!")
     else:
-        for task in range(len(task_list)):
-        
-            if task_list[task][1] == False:
-                print(f'{task + 1}: {task_list[task][0]} [ ]')
-            elif task_list[task][1] == True:
-                print(f'{task + 1}: {task_list[task][0]} [X]')
-            
-    initApp()
+        for task in task_list_db:        
+            if task.status == False:
+                print(f'ID: {task.id}: {task.task} [ ]')
+            elif task.status == True:
+                print(f'ID: {task.id}: {task.task} [X]') 
+    if ret:            
+        return task_list_db 
+    else:         
+        initApp()
 
 def remove_task():
-    remove_task_id = input('What is the task index? ')
+    remove_task_id = input('What is the task ID? ')
     
     if remove_task_id.isdigit():
         remove_task_id_Num = int(remove_task_id)
@@ -64,12 +69,11 @@ def remove_task():
         print("Task doesn't exist. Try again!")
         remove_task()
 
-    if remove_task_id_Num > len(task_list) or remove_task_id_Num <= 0:
+    removed_task = remove_by_id_db(remove_task_id_Num)
+    if not removed_task:
         print("Task doesn't exist. Try again!")
         remove_task()
-    
-    
-    task_list.pop(remove_task_id_Num - 1)
+
     print('Done')
     list_task()
 
@@ -78,13 +82,11 @@ def checked_task():
     
     if checked_task_Id.isdigit():
         checked_task_Id = int(checked_task_Id)
-        if checked_task_Id <=0 or checked_task_Id > len(task_list):
+        task_update = update_status_by_add(checked_task_Id)
+        if not task_update:
             print('Invalid index range. Try again!')
             checked_task()
         else:
-            #ternary expression
-            task_list[checked_task_Id - 1][1] = True if task_list[checked_task_Id - 1][1] == False else False 
-            print('Done!\n')
             list_task()
     elif checked_task_Id == '' or checked_task_Id.lower() == 'exit':
         initApp()
@@ -92,18 +94,6 @@ def checked_task():
         print('Choose a valid index')
         checked_task()
 
-def save_task():
-    task_doc = 'Gerenciador de Tarefas.txt'
-    with open(task_doc, 'w') as file:
-        file.write('GERENCIADOR DE TAREFAS\n')
-
-        for el in range(len(task_list)):
-            
-            msg_task = f'{el + 1}: {task_list[el][0]} [ ]\n' if task_list[el][1] == False else f'{el + 1}: {task_list[el][0]} [X]\n'
-            
-            file.writelines(msg_task)
-    print("Saved as 'Gerenciador de Tarefas.txt'\n")
-    initApp()
 
 def filter_status ():
     status = input('which tasks do you want to see? Done or To do: ').lower()
@@ -115,15 +105,31 @@ def filter_status ():
     else:
         print('type \'Done\' or \'To do\'')
         filter_status()
+
+    status_list = get_task_by_status_db(status_Bol)
     
-    for i,el in enumerate(task_list):
-        if el[1] == status_Bol:
-            if el[1] == False:
-                print(f'{i + 1}: {el[0]} [ ]')
-            elif el[1] == True:
-                print(f'{i + 1}: {el[0]} [X]')
+    for task in status_list:
+        checkbox = '[X]' if status_Bol else '[ ]'
+        print(f'ID: {task.id}: {task.task} {checkbox}')
             
     initApp()
+
+def save_task():
+    task_doc = 'Gerenciador de Tarefas.txt'
+    with open(task_doc, 'w') as file:
+        file.write('GERENCIADOR DE TAREFAS\n')
+
+        task_list_all = list_task(True)
+
+        for task in task_list_all:
+            checkbox = '[X]' if task.status == True else '[ ]'
+            
+            msg_task = f' {task.id}: {task.task} {checkbox}\n'
+            
+            file.writelines(msg_task)
+    print("Saved as 'Gerenciador de Tarefas.txt'\n")
+    initApp()
+
            
         
 
