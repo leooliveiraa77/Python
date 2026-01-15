@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from app.schemas import NewUser
-from app.db import (create_users, select_users, select_user_by_email, update_user_by_email, delete_user_by_mail)
+from app.db import (create_users, select_users, select_user_by_email, update_user_by_email, delete_user_by_mail, select_books)
 
 app = FastAPI()
 
@@ -44,5 +44,11 @@ def delete_user_by_mail_api(email: str):
     if not deleted_user:
         raise HTTPException(status_code=404, detail= 'User not found')
     elif not confirmation:
-        return {'deleted_user': deleted_user}     
+        return {'deleted_user': deleted_user} 
+
+@app.get('/book/all')
+def get_all_books_api():
+    books = select_books()
+    print(books)   
+    return books
         

@@ -59,3 +59,15 @@ def delete_user_by_mail(email):
             session.commit()
         
         return user
+
+def creat_books(title, author, date, edition):
+    with Session(engine) as session:
+        book = Book(book_title=title, book_author= author, publish_date= date, book_edition= edition)
+        session.add(book)
+        session.commit()
+
+def select_books():
+    with Session(engine) as session:
+        all_books_list = session.exec(select(Book)).all()
+        return all_books_list
+        
