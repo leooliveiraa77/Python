@@ -6,7 +6,8 @@ BASE_DIR = Path(__file__).resolve().parent
 sqlite_file_name = BASE_DIR / 'database.db'
 sqlite_url = f'sqlite:///{sqlite_file_name}'
 
-engine = create_engine(sqlite_url, echo=True)
+connect_args = {'check_same_thread': False}
+engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
 
 def creat_db_and_tables():
     SQLModel.metadata.create_all(engine)
@@ -60,11 +61,13 @@ def delete_user_by_mail(email):
         
         return user
 
-def creat_books(title, author, date, edition):
+def creat_books(book):
     with Session(engine) as session:
-        book = Book(book_title=title, book_author= author, publish_date= date, book_edition= edition)
+        book = Book(book_title=book.title, book_author= book.author, publish_date= book.date, book_edition= book.edition)
         session.add(book)
         session.commit()
+        session.refresh(book)
+        return book
 
 def select_books():
     with Session(engine) as session:

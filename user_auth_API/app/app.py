@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
-from app.schemas import NewUser
-from app.db import (create_users, select_users, select_user_by_email, update_user_by_email, delete_user_by_mail, select_books)
+from app.schemas import NewUser, NewBook
+from app.db import (create_users, select_users, select_user_by_email, update_user_by_email, delete_user_by_mail, select_books, creat_books)
 
 app = FastAPI()
 
@@ -51,4 +51,8 @@ def get_all_books_api():
     books = select_books()
     print(books)   
     return books
+
+@app.post('/book/new_book/')
+def creat_book_api(book: NewBook):
+    return creat_books(book)
         
