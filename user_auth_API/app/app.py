@@ -8,7 +8,7 @@ app = FastAPI()
 def read_root_api():
     return {'Hello world'}
 
-@app.get('/login')
+@app.post('/login/')
 def login_handler_api(email: str):
     user = select_user_by_email(email)
 
@@ -26,7 +26,7 @@ def get_all_users_api():
 def create_user_api(user: NewUser):
     return create_users(user)
     
-@app.put('/users/{user_email}')
+@app.patch('/users/{user_email}')
 def update_item_api(user_email: str, new_user_password: str|None = None,  new_user_name: str | None = None):
     user = select_user_by_email(user_email)
 
