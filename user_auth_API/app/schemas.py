@@ -5,10 +5,10 @@ class NewUser(BaseModel):
     user_name: str
     email: str
     password_hash: str
-    acc_crated_date: str | None
+    acc_crated_date: str
     
 class NewBook(BaseModel):
-    title: str
-    author: str
-    date: str
-    edition: str
+    book_title: str
+    book_author: str
+    publish_date: str
+    book_edition: str
