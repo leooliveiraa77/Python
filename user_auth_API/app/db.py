@@ -9,7 +9,7 @@ sqlite_url = f'sqlite:///{sqlite_file_name}'
 connect_args = {'check_same_thread': False}
 engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
 
-def creat_db_and_tables():
+def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
     print('Done!')
 
@@ -19,7 +19,7 @@ def get_session():
 
 def create_users(session : Session, user: User):
 
-    user_acc = User(user_name=user.user_name, email=user.email, password_hash=user.password_hash, acc_crated_date=user.acc_crated_date)
+    user_acc = User(user_name=user.user_name, email=user.email, password_hash=user.password_hash, acc_created_date=user.acc_created_date)
 
     session.add(user_acc)    
     session.commit()
@@ -42,6 +42,10 @@ def select_user_by_email(session: Session, email: str):
 def update_user_by_email(session: Session, email, new_user_password, new_user_name):
 
     user = session.exec(select(User).where(col(User.email) == email)).first()
+    
+    if not user:
+        return None
+    
     if new_user_password:
         user.password_hash = new_user_password
     if new_user_name:
@@ -53,7 +57,7 @@ def update_user_by_email(session: Session, email, new_user_password, new_user_na
 
     return user
 
-def delete_user_by_mail(session, email):    
+def delete_user_by_email(session, email):    
     user = session.exec(select(User).where(col(User.email) == email)).first()
     if user:
         session.delete(user)
@@ -61,7 +65,7 @@ def delete_user_by_mail(session, email):
     
     return {'user': user, 'Ok': True}
 
-def creat_books(session : Session, book):
+def create_books(session : Session, book):
     book = Book(book_title=book.book_title, book_author= book.book_author, publish_date= book.publish_date, book_edition= book.book_edition)
     session.add(book)
     session.commit()

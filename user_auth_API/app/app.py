@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
 from sqlmodel import Session
 from app.schemas import NewUser, NewBook
-from app.db import (get_session, create_users, select_users, select_user_by_email, update_user_by_email, delete_user_by_mail, select_books, creat_books)
+from app.db import (get_session, create_users, select_users, select_user_by_email, update_user_by_email, delete_user_by_email, select_books, create_books)
 
 app = FastAPI()
 
@@ -38,7 +38,7 @@ def update_item_api(*, session : Session = Depends(get_session), user_email: str
 
 @app.delete('/user/delete/')
 def delete_user_by_mail_api(*, session : Session = Depends(get_session),email: str):
-    deleted_user = delete_user_by_mail(session, email)
+    deleted_user = delete_user_by_email(session, email)
     confirmation = select_user_by_email(session, email)
     
     if not deleted_user:
@@ -54,5 +54,5 @@ def get_all_books_api(*, session : Session = Depends(get_session)):
 
 @app.post('/book/new_book/')
 def creat_book_api(*, session:Session = Depends(get_session),book: NewBook):
-    return creat_books(session, book)
+    return create_books(session, book)
         
