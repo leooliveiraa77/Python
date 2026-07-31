@@ -1,11 +1,12 @@
 from sqlmodel import SQLModel, Field, Relationship
+from datetime import date
 
 class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     user_name: str
     email: str = Field(index=True, unique=True)
     password_hash: str
-    acc_created_date: str | None
+    acc_created_date: date | None
     books_borrowed: list['Book'] = Relationship(back_populates='borrowed_for')
 
 class Book(SQLModel, table=True):

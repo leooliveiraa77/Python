@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Depends
 from sqlmodel import Session
-from app.schemas import NewUser, NewBook
+from app.schemas import BookCreate, BookResponse, UserCreate, UserResponse
 from app.db import (get_session, create_users, select_users, select_user_by_email, update_user_by_email, delete_user_by_email, select_books, create_books)
 
 app = FastAPI()
@@ -9,7 +9,7 @@ app = FastAPI()
 def read_root_api():
     return {'Hello world'}
 
-@app.post('/login/')
+@app.post('/login/', response_model = UserResponse)
 def login_handler_api(*, session : Session = Depends(get_session),email: str):
     user = select_user_by_email(session, email)
 
@@ -17,13 +17,13 @@ def login_handler_api(*, session : Session = Depends(get_session),email: str):
         raise HTTPException(status_code=404, detail='User not found')    
     return user
 
-@app.get('/user/all/', response_model= list[NewUser])
+@app.get('/user/all/', response_model= list[UserResponse])
 def get_all_users_api(*, session: Session = Depends(get_session)):
     return select_users(session)
 
 
 @app.post('/new_user/')
-def create_user_api(*, session : Session = Depends(get_session), user: NewUser):
+def create_user_api(*, session : Session = Depends(get_session), user: UserCreate):
     return create_users(session, user)
     
 @app.patch('/users/{user_email}')
@@ -37,7 +37,7 @@ def update_item_api(*, session : Session = Depends(get_session), user_email: str
        return updated_user
 
 @app.delete('/user/delete/')
-def delete_user_by_mail_api(*, session : Session = Depends(get_session),email: str):
+def delete_user_by_email_api(*, session : Session = Depends(get_session),email: str):
     deleted_user = delete_user_by_email(session, email)
     confirmation = select_user_by_email(session, email)
     
@@ -46,13 +46,13 @@ def delete_user_by_mail_api(*, session : Session = Depends(get_session),email: s
     elif not confirmation:
         return {'deleted_user': deleted_user} 
 
-@app.get('/book/all/', response_model=list[NewBook])
+@app.get('/book/all/', response_model=list[BookResponse])
 def get_all_books_api(*, session : Session = Depends(get_session)):
     books = select_books(session)
     print(books)   
     return books
 
-@app.post('/book/new_book/')
-def creat_book_api(*, session:Session = Depends(get_session),book: NewBook):
+@app.post('/book/new_book/', response_model= BookResponse)
+def creat_book_api(*, session:Session = Depends(get_session),book: BookCreate):
     return create_books(session, book)
         
