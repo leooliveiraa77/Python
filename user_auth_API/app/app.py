@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from sqlmodel import Session
 from app.schemas import BookCreate, BookResponse, UserCreate, UserResponse
 from app.db import (get_session, create_users, select_users, select_user_by_email, update_user_by_email, delete_user_by_email, select_books, create_books)
-
+from app.security import verify_password
 app = FastAPI()
 
 @app.get('/')
@@ -10,11 +10,15 @@ def read_root_api():
     return {'Hello world'}
 
 @app.post('/login/', response_model = UserResponse)
-def login_handler_api(*, session : Session = Depends(get_session),email: str):
+def login_handler_api(*, session : Session = Depends(get_session),email: str, password: str):
     user = select_user_by_email(session, email)
 
     if not user:
-        raise HTTPException(status_code=404, detail='User not found')    
+        raise HTTPException(status_code=401, detail='Invalid credentials') 
+    
+    if not verify_password(password, user.password_hash):  
+        raise HTTPException(status_code=401, detail='Invalid credentials')
+        
     return user
 
 @app.get('/user/all/', response_model= list[UserResponse])

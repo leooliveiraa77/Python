@@ -4,7 +4,7 @@ from datetime import date
 class UserCreate(BaseModel):
     user_name: str
     email: str
-    password_hash: str
+    password: str
 
 class UserResponse(BaseModel):
     id: int

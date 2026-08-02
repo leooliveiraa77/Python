@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, create_engine, Session, select, col
 from pathlib import Path
 from app.models import *
 from datetime import date
+from app.security import password_hash
 
 BASE_DIR = Path(__file__).resolve().parent
 sqlite_file_name = BASE_DIR / 'database.db'
@@ -19,8 +20,9 @@ def get_session():
         yield session
 
 def create_users(session : Session, user: User):
+    
 
-    user_acc = User(user_name=user.user_name, email=user.email, password_hash=user.password_hash, acc_created_date=date.today())
+    user_acc = User(user_name=user.user_name, email=user.email, password_hash=password_hash.hash(user.password_hash), acc_created_date=date.today())
 
     session.add(user_acc)    
     session.commit()
