@@ -1,8 +1,9 @@
 from fastapi import FastAPI, HTTPException, Depends
 from sqlmodel import Session
-from app.schemas import BookCreate, BookResponse, UserCreate, UserResponse
+from app.schemas import BookCreate, BookResponse, UserCreate, UserResponse, Token
 from app.db import (get_session, create_users, select_users, select_user_by_email, update_user_by_email, delete_user_by_email, select_books, create_books)
 from app.services import authenticate_user
+from app.security import create_access_token
 
 app = FastAPI()
 
@@ -10,15 +11,13 @@ app = FastAPI()
 def read_root_api():
     return {'Hello world'}
 
-@app.post('/login/', response_model = UserResponse)
+@app.post('/login/', response_model = Token)
 def login_handler_api(*, session : Session = Depends(get_session),email: str, password: str):
 
     user = authenticate_user(session, email, password)
 
-    if  user is None:
-        raise HTTPException(status_code=401, detail='Invalid credentials') 
-    
-    return user
+    access_token = create_access_token(data={'sub': user.email})
+    return Token(access_token=access_token, token_type= "bearer")
 
 
 @app.get('/user/all/', response_model= list[UserResponse])

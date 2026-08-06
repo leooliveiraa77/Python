@@ -24,3 +24,7 @@ class BookResponse(BaseModel):
     book_author: str
     publish_date: str
     book_edition: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
