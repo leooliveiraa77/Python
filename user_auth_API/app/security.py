@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from pwdlib import PasswordHash
-import jwt
 from app.config import (ACCESS_TOKEN_EXPIRE_MINUTES,ALGORITHM, SECRET_KEY)
+import jwt
 
 password_hash=PasswordHash.recommended()
 
@@ -20,4 +20,3 @@ def create_access_token(data: dict):
     enconded_jwt = jwt.encode(payload=to_encode,key=SECRET_KEY,algorithm=ALGORITHM)
 
     return enconded_jwt
-

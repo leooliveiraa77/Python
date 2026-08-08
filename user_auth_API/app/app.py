@@ -1,9 +1,11 @@
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session
 from app.schemas import BookCreate, BookResponse, UserCreate, UserResponse, Token
 from app.db import (get_session, create_users, select_users, select_user_by_email, update_user_by_email, delete_user_by_email, select_books, create_books)
 from app.services import authenticate_user
 from app.security import create_access_token
+from app.auth import get_current_user
 
 app = FastAPI()
 
@@ -12,16 +14,19 @@ def read_root_api():
     return {'Hello world'}
 
 @app.post('/login/', response_model = Token)
-def login_handler_api(*, session : Session = Depends(get_session),email: str, password: str):
+def login_handler_api(*, session : Session = Depends(get_session),form_data: OAuth2PasswordRequestForm = Depends()):
 
-    user = authenticate_user(session, email, password)
+    user = authenticate_user(session, form_data.username, form_data.password)
+
+    if user is None:
+        raise HTTPException(status_code=404, detail= 'User not found')
 
     access_token = create_access_token(data={'sub': user.email})
     return Token(access_token=access_token, token_type= "bearer")
 
 
 @app.get('/user/all/', response_model= list[UserResponse])
-def get_all_users_api(*, session: Session = Depends(get_session)):
+def get_all_users_api(*, session: Session = Depends(get_session), user = Depends(get_current_user)):
     return select_users(session)
 
 
