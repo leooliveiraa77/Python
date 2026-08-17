@@ -1,5 +1,5 @@
 import uvicorn 
-from app.db import create_db_and_tables, create_books, select_books
+from app.db import create_db_and_tables
 
 
 def main():

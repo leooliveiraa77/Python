@@ -25,17 +25,17 @@ def login_handler_api(*, session : Session = Depends(get_session),form_data: OAu
     return Token(access_token=access_token, token_type= "bearer")
 
 
-@app.get('/user/all/', response_model= list[UserResponse])
+@app.get('/users/', response_model= list[UserResponse])
 def get_all_users_api(*, session: Session = Depends(get_session), user = Depends(get_current_user)):
     return select_users(session)
 
 
-@app.post('/new_user/')
+@app.post('/new-user/')
 def create_user_api(*, session : Session = Depends(get_session), user: UserCreate):
     return create_users(session, user)
     
 @app.patch('/users/{user_email}')
-def update_item_api(*, session : Session = Depends(get_session), user_email: str, new_user_password: str|None = None,  new_user_name: str | None = None):
+def update_item_api(*, session : Session = Depends(get_session), user_email: str, new_user_password: str|None = None,  new_user_name: str | None = None, user = Depends(get_current_user)):
     user = select_user_by_email(session, user_email)
 
     if not user:
@@ -44,8 +44,8 @@ def update_item_api(*, session : Session = Depends(get_session), user_email: str
        updated_user = update_user_by_email(session, user_email, new_user_password, new_user_name)
        return updated_user
 
-@app.delete('/user/delete/')
-def delete_user_by_email_api(*, session : Session = Depends(get_session),email: str):
+@app.delete('/users/{user_email}')
+def delete_user_by_email_api(*, session : Session = Depends(get_session),email: str, user = Depends(get_current_user)):
     deleted_user = delete_user_by_email(session, email)
     confirmation = select_user_by_email(session, email)
     
@@ -54,13 +54,13 @@ def delete_user_by_email_api(*, session : Session = Depends(get_session),email: 
     elif not confirmation:
         return {'deleted_user': deleted_user} 
 
-@app.get('/book/all/', response_model=list[BookResponse])
-def get_all_books_api(*, session : Session = Depends(get_session)):
+@app.get('/books/', response_model=list[BookResponse])
+def get_all_books_api(*, session : Session = Depends(get_session), user = Depends(get_current_user)):
     books = select_books(session)
     print(books)   
     return books
 
-@app.post('/book/new_book/', response_model= BookResponse)
-def creat_book_api(*, session:Session = Depends(get_session),book: BookCreate):
+@app.post('/new-book/', response_model= BookResponse)
+def creat_book_api(*, session:Session = Depends(get_session),book: BookCreate, user = Depends(get_current_user)):
     return create_books(session, book)
         
