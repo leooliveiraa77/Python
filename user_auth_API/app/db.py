@@ -50,7 +50,7 @@ def update_user_by_email(session: Session, email, new_user_password, new_user_na
         return None
     
     if new_user_password:
-        user.password_hash = new_user_password
+        user.password_hash = hash_password(new_user_password)
     if new_user_name:
         user.user_name = new_user_name
     

@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session
-from app.schemas import BookCreate, BookResponse, UserCreate, UserResponse, Token
+from app.schemas import BookCreate, BookResponse, UserCreate, UserResponse, UserUpdate, Token
 from app.db import (get_session, create_users, select_users, select_user_by_email, update_user_by_email, delete_user_by_email, select_books, create_books)
 from app.services import authenticate_user
 from app.security import create_access_token
@@ -35,19 +35,26 @@ def create_user_api(*, session : Session = Depends(get_session), user: UserCreat
     return create_users(session, user)
     
 @app.patch('/users/{user_email}')
-def update_item_api(*, session : Session = Depends(get_session), user_email: str, new_user_password: str|None = None,  new_user_name: str | None = None, user = Depends(get_current_user)):
-    user = select_user_by_email(session, user_email)
+def update_item_api(*, session : Session = Depends(get_session), user_email: str, user_update: UserUpdate, user = Depends(get_current_user)):
+    target_user = select_user_by_email(session, user_email)
 
-    if not user:
-        raise HTTPException(status_code=404, detail='User not found')
-    elif user.email == user_email:
-       updated_user = update_user_by_email(session, user_email, new_user_password, new_user_name)
-       return updated_user
+    if not target_user:
+            raise HTTPException(status_code=404, detail='User not found')
+    
+    if user.email != target_user.email:
+        raise HTTPException(status_code= 403, detail= "You don't have permission to update this user")
+
+    updated_user = update_user_by_email(session, user_email, user_update.new_user_password, user_update.new_user_name)
+    return updated_user
 
 @app.delete('/users/{user_email}')
-def delete_user_by_email_api(*, session : Session = Depends(get_session),email: str, user = Depends(get_current_user)):
-    deleted_user = delete_user_by_email(session, email)
-    confirmation = select_user_by_email(session, email)
+def delete_user_by_email_api(*, session : Session = Depends(get_session),user_email: str, user = Depends(get_current_user)):
+
+    if user.email != user_email:
+        raise HTTPException(status_code=403, detail= "You don't have permission to delete this user")
+
+    deleted_user = delete_user_by_email(session, user_email)
+    confirmation = select_user_by_email(session, user_email)
     
     if not deleted_user:
         raise HTTPException(status_code=404, detail= 'User not found')

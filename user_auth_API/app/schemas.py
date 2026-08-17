@@ -12,6 +12,10 @@ class UserResponse(BaseModel):
     email: str
     acc_created_date: date | None
 
+class UserUpdate(BaseModel):
+    new_user_name: str | None = None
+    new_user_password: str | None = None
+
 class BookCreate(BaseModel):
     book_title: str
     book_author: str
