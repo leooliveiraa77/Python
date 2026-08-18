@@ -5,7 +5,7 @@ from app.schemas import BookCreate, BookResponse, UserCreate, UserResponse, User
 from app.db import (get_session, create_users, select_users, select_user_by_email, update_user_by_email, delete_user_by_email, select_books, create_books)
 from app.services import authenticate_user
 from app.security import create_access_token
-from app.auth import get_current_user
+from app.auth import get_current_user, require_admin
 
 app = FastAPI()
 
@@ -26,7 +26,7 @@ def login_handler_api(*, session : Session = Depends(get_session),form_data: OAu
 
 
 @app.get('/users/', response_model= list[UserResponse])
-def get_all_users_api(*, session: Session = Depends(get_session), user = Depends(get_current_user)):
+def get_all_users_api(*, session: Session = Depends(get_session), user = Depends(require_admin)):
     return select_users(session)
 
 
@@ -68,6 +68,6 @@ def get_all_books_api(*, session : Session = Depends(get_session), user = Depend
     return books
 
 @app.post('/new-book/', response_model= BookResponse)
-def creat_book_api(*, session:Session = Depends(get_session),book: BookCreate, user = Depends(get_current_user)):
+def creat_book_api(*, session:Session = Depends(get_session),book: BookCreate, user = Depends(require_admin)):
     return create_books(session, book)
         

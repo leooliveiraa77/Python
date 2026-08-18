@@ -10,6 +10,7 @@ class UserResponse(BaseModel):
     id: int
     user_name: str
     email: str
+    role: str
     acc_created_date: date | None
 
 class UserUpdate(BaseModel):

@@ -27,3 +27,8 @@ def get_current_user(session : Session = Depends(get_session), token: str = Depe
 
 
     return user
+
+def require_admin(user = Depends(get_current_user)):
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail= "Admin privileges required")
+    return user

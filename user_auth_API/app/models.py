@@ -7,6 +7,7 @@ class User(SQLModel, table=True):
     email: str = Field(index=True, unique=True)
     password_hash: str
     acc_created_date: date | None
+    role: str = "user"
     books_borrowed: list['Book'] = Relationship(back_populates='borrowed_for')
 
 class Book(SQLModel, table=True):
